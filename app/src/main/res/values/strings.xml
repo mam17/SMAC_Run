@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">RunApp</string>
+    <string name="home">Home</string>
+    <string name="event">Event</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!--    -->
+    <string name="user_name">USER NAME</string>
+    <string name="today">TODAY:</string>
+    <string name="_500">500</string>
+    <string name="_4_000_steps">/4.000 steps</string>
+    <string name="recent_achieved_badge">RECENT ACHIEVED BADGE</string>
+    <string name="view_all">View all</string>
+
+    <string name="day">Day</string>
+    <string name="week">Week</string>
+    <string name="month">Month</string>
+    <string name="received">Received</string>
+    <string name="_1_watering_can">1 Watering can</string>
+    <string name="receive">Receive</string>
+    <string name="fertilizer">Fertilizer</string>
+    <string name="pesticide">Pesticide</string>
+    <string name="month_challenge">Month challenge</string>
+    <string name="_3_12_titles">3/12 Titles</string>
+    <string name="archived_total_200_000_steps_n_30_08_2022">Archived total 200.000 steps \n 30/08/2022</string>
+    <string name="spectacular_breakout">Spectacular Breakout</string>
+    <string name="share">Share</string>
+
+</resources>
