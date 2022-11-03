@@ -1,7 +1,9 @@
 package com.example.smac_runapp
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.example.smac_runapp.databinding.ActivityMainBinding
@@ -9,6 +11,8 @@ import com.example.smac_runapp.fragment.EventFragment
 import com.example.smac_runapp.fragment.HomeFragment
 import com.example.smac_runapp.fragment.fragAwards.AwardFragment
 import com.example.smac_runapp.interfaces.HomeBack
+import kotlinx.android.synthetic.main.activity_main2.*
+
 
 class MainActivity : AppCompatActivity(), HomeBack {
     private lateinit var mBinding: ActivityMainBinding
@@ -28,9 +32,14 @@ class MainActivity : AppCompatActivity(), HomeBack {
             true
         }
 
-        mBinding.backToolbar.back.setOnClickListener{
+        mBinding.backToolbar.back.setOnClickListener {
             val f = supportFragmentManager.findFragmentById(R.id.frame)
-                reFragment(HomeFragment(this))
+            reFragment(HomeFragment(this))
+        }
+
+        mBinding.backToolbar.noti.setOnClickListener{
+            val intent = Intent(this, MainActivity2::class.java)
+            startActivity(intent)
         }
     }
 

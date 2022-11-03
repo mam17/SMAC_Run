@@ -5,15 +5,20 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.smac_runapp.R
+import com.example.smac_runapp.databinding.FragmentEventBinding
 import com.example.smac_runapp.interfaces.HomeBack
 
+
 class EventFragment(private val goHome: HomeBack) : Fragment() {
+    private lateinit var mBinding: FragmentEventBinding
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_event, container, false)
+        mBinding = FragmentEventBinding.inflate(inflater, container, false)
+        return mBinding.root
     }
+
 }

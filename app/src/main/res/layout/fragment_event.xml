@@ -1,14 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     tools:context=".fragment.EventFragment">
+    <data>
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    </data>
+
+    <RelativeLayout
+        android:id="@+id/fragmentViewEvent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
-
-</FrameLayout>
+        android:padding="@dimen/dimen_16"
+        android:background="@color/cardview_shadow_start_color">
+<!--        <TextView-->
+<!--            android:id="@+id/title_text_view"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="aaaaaaaaaaaaaaaaaaaaaaaa" />-->
+<!--        <ScrollView-->
+<!--            android:layout_width="fill_parent"-->
+<!--            android:layout_height="fill_parent"-->
+<!--            android:layout_below="@id/title_text_view">-->
+<!--            <com.example.smac_runapp.logger.LogView-->
+<!--                android:id="@+id/sample_logview"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:scrollbars="vertical" />-->
+<!--        </ScrollView>-->
+    </RelativeLayout>
+</layout>
