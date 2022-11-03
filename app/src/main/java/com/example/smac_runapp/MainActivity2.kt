@@ -134,46 +134,19 @@ class MainActivity2 : AppCompatActivity() {
 
     //Đọc tổng số bước hàng ngày hiện tại.
     private fun readData() {
-//        Fitness.getHistoryClient(this, getGoogleAccount())
-//                .readDailyTotal(DataType.TYPE_STEP_COUNT_DELTA)
-//                .addOnSuccessListener { dataSet ->
-//                    val total = when {
-//                        dataSet.isEmpty -> 0
-//                        else -> dataSet.dataPoints.first().getValue(Field.FIELD_STEPS).asInt()
-//                    }
-//                    Log.i(TAG, "Total steps: $total")
-//                }
-//                .addOnFailureListener { e ->
-//                    Log.w(TAG, "There was a problem getting the step count.", e)
-//                }
         val cal: Calendar = Calendar.getInstance()
         val now = Date()
-        cal.setTime(Date())
-        val endtime: Long = cal.getTimeInMillis()
-        cal.add(Calendar.WEEK_OF_MONTH, -1)
-        val starttime: Long = cal.getTimeInMillis()
-
-//        val dateFormat: DateFormat = DateFormat.getDateInstance()
-//        Log.e("History", "Range Start: " + dateFormat.format(starttime))
-//        Log.e("History", "Range End: " + dateFormat.format(endtime))
+        cal.time = Date()
+        val endtime: Long = cal.timeInMillis
+        cal.add(Calendar.DATE, -1)
+        val starttime: Long = cal.timeInMillis
 
         val readRequest = DataReadRequest.Builder()
             .aggregate(DataType.TYPE_STEP_COUNT_DELTA, DataType.AGGREGATE_STEP_COUNT_DELTA)
             .bucketByTime(1, TimeUnit.DAYS)
             .setTimeRange(starttime, endtime, TimeUnit.MILLISECONDS)
             .build()
-//
-//        Fitness.getHistoryClient(this,getGoogleAccount())
-//            .readDailyTotal(DataType.TYPE_STEP_COUNT_DELTA)
-//            .addOnSuccessListener { dataSet ->
-//                val total =
-//                    if (dataSet.isEmpty) 0 else dataSet.dataPoints[0].getValue(Field.FIELD_STEPS)
-//                        .asInt().toLong()
-//                showDataSet(dataSet)
-//            }
-//            .addOnFailureListener { e ->
-//                Log.w(TAG, "There was a problem getting the step count.", e)
-//            }
+
         Fitness.getHistoryClient(this, GoogleSignIn.getAccountForExtension(this, fitnessOptions))
             .readData(readRequest)
             .addOnSuccessListener { response ->
