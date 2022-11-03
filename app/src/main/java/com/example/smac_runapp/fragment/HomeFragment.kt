@@ -127,13 +127,10 @@ class HomeFragment(private val goToHome: HomeBack) : Fragment() {
         Fitness.getHistoryClient(this.requireActivity().applicationContext, GoogleSignIn.getAccountForExtension(this.requireActivity().applicationContext, fitnessOptions))
             .readData(readRequest)
             .addOnSuccessListener { response ->
-                // The aggregate query puts datasets into buckets, so flatten into a
-                // single list of datasets
                 for (dataSet in response.buckets.flatMap { it.dataSets }) {
                     for (dp in dataSet.dataPoints) {
                         for (field in dp.dataType.fields) {
-                            var value = dp.getValue(field).asInt().toString()
-                            Log.d("VALUE", value)
+                            val value = dp.getValue(field).asInt().toString()
                             numSteps.text = value
                         }
                     }
