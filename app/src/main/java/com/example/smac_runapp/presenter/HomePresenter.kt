@@ -1,5 +1,7 @@
 package com.example.smac_runapp.presenter
 
-class HomePresenter {
-//hgggggggggggggggggggggggggggggggg
+import com.example.smac_runapp.interfaces.HomeInterface
+
+class HomePresenter: HomeInterface{
+
 }

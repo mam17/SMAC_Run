@@ -12,7 +12,7 @@ import com.example.smac_runapp.adapter.TabLayoutAdapter
 import com.example.smac_runapp.customviews.SpacesItemDecoration
 import com.example.smac_runapp.databinding.FragmentHomeBinding
 import com.example.smac_runapp.fragment.fragAwards.AwardFragment
-import com.example.smac_runapp.interfaces.HomeBack
+import com.example.smac_runapp.interfaces.HomeInterface
 import com.example.smac_runapp.logger.Log
 import com.example.smac_runapp.models.Receive
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -26,7 +26,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
-class HomeFragment(private val goToHome: HomeBack) : Fragment() {
+class HomeFragment(private val goToHome: HomeInterface) : Fragment() {
 
     private lateinit var mBinding: FragmentHomeBinding
     private var myAdapter = ReceiveAdapter(arrayListOf(),0)

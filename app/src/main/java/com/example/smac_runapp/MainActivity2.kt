@@ -136,9 +136,9 @@ class MainActivity2 : AppCompatActivity() {
     private fun readData() {
         val cal: Calendar = Calendar.getInstance()
         val now = Date()
-        cal.time = Date()
+        cal.time = now
         val endtime: Long = cal.timeInMillis
-        cal.add(Calendar.DATE, -1)
+        cal.add(Calendar.DAY_OF_WEEK, -7)
         val starttime: Long = cal.timeInMillis
 
         val readRequest = DataReadRequest.Builder()

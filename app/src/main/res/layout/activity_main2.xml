@@ -17,10 +17,12 @@
             android:layout_height="wrap_content"
             android:id="@+id/title_text_view"
             android:text="@string/intro_text" />
+
         <ScrollView
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_below="@id/title_text_view">
+
             <com.example.smac_runapp.logger.LogView
                 android:id="@+id/sample_logview"
                 android:layout_width="wrap_content"

@@ -2,7 +2,6 @@ package com.example.smac_runapp
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -10,11 +9,10 @@ import com.example.smac_runapp.databinding.ActivityMainBinding
 import com.example.smac_runapp.fragment.EventFragment
 import com.example.smac_runapp.fragment.HomeFragment
 import com.example.smac_runapp.fragment.fragAwards.AwardFragment
-import com.example.smac_runapp.interfaces.HomeBack
-import kotlinx.android.synthetic.main.activity_main2.*
+import com.example.smac_runapp.interfaces.HomeInterface
 
 
-class MainActivity : AppCompatActivity(), HomeBack {
+class MainActivity : AppCompatActivity(), HomeInterface {
     private lateinit var mBinding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
