@@ -124,7 +124,7 @@ class HomeFragment(private val goToHome: HomeInterface) : Fragment() {
         cal[Calendar.SECOND] = 0
         val endtime = cal.timeInMillis
 
-        cal.add(Calendar.WEEK_OF_MONTH, -1)
+        cal.add(Calendar.DATE, -1)
         cal[Calendar.HOUR_OF_DAY] = 0
         cal[Calendar.MINUTE] = 0
         cal[Calendar.SECOND] = 0
