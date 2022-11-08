@@ -70,12 +70,24 @@ class DayFragment : Fragment() {
 
     //Đọc tổng số bước hàng ngày hiện tại.
     private fun readData() {
-        val cal: Calendar = Calendar.getInstance()
-        val now = Date()
-        cal.time = now
-        val endtime: Long = cal.timeInMillis
-        cal.add(Calendar.DAY_OF_WEEK, -7)
-        val starttime: Long = cal.timeInMillis
+//        val cal: Calendar = Calendar.getInstance()
+//        val now = Date()
+//        cal.time = now
+//        val endtime: Long = cal.timeInMillis
+//        cal.add(Calendar.DAY_OF_WEEK, -7)
+//        val starttime: Long = cal.timeInMillis
+        val cal = Calendar.getInstance()
+        cal.time = Date()
+        cal[Calendar.HOUR_OF_DAY] = 0
+        cal[Calendar.MINUTE] = 0
+        cal[Calendar.SECOND] = 0
+        val endtime = cal.timeInMillis
+
+        cal.add(Calendar.WEEK_OF_MONTH, -1)
+        cal[Calendar.HOUR_OF_DAY] = 0
+        cal[Calendar.MINUTE] = 0
+        cal[Calendar.SECOND] = 0
+        val starttime = cal.timeInMillis
 
         val readRequest = DataReadRequest.Builder()
             .aggregate(DataType.TYPE_STEP_COUNT_DELTA, DataType.AGGREGATE_STEP_COUNT_DELTA)
