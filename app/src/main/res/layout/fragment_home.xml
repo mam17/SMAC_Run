@@ -6,7 +6,7 @@
     <data>
         <variable
             name="presenter"
-            type="com.example.smac_runapp.fragment.HomeFragment" />
+            type="com.example.smac_runapp.presenter.HomePresenter" />
     </data>
 
     <androidx.core.widget.NestedScrollView
