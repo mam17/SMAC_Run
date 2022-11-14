@@ -18,7 +18,6 @@ import com.example.smac_runapp.fragment.fragAwards.AwardFragment
 import com.example.smac_runapp.interfaces.HomeInterface
 import com.example.smac_runapp.logger.Log
 import com.example.smac_runapp.models.Receive
-import com.example.smac_runapp.presenter.HomePresenter
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.fitness.Fitness
 import com.google.android.gms.fitness.FitnessOptions
@@ -33,7 +32,6 @@ import kotlin.collections.ArrayList
 class HomeFragment(private val goToHome: HomeInterface) : Fragment() {
 
     private lateinit var mBinding: FragmentHomeBinding
-    private lateinit var homePresenter: HomePresenter
     private var myAdapter = ReceiveAdapter(arrayListOf(),0)
     private var lsReceive: ArrayList<Receive> = ArrayList()
     private val fitnessOptions = FitnessOptions.builder()
@@ -41,15 +39,11 @@ class HomeFragment(private val goToHome: HomeInterface) : Fragment() {
         .addDataType(DataType.TYPE_STEP_COUNT_DELTA)
         .build()
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         mBinding = FragmentHomeBinding.inflate(inflater, container, false)
-        homePresenter = ViewModelProvider(this)[HomePresenter::class.java]
-        mBinding.presenter = homePresenter
-        homePresenter.checkPermission(requireActivity())
         return mBinding.root
     }
 
@@ -115,6 +109,12 @@ class HomeFragment(private val goToHome: HomeInterface) : Fragment() {
 
     //Đọc tổng số bước hàng ngày hiện tại.
     private fun readData() {
+//        val cal: Calendar = Calendar.getInstance()
+//        val now = Date()
+//        cal.time = Date()
+//        val endtime: Long = cal.timeInMillis
+//        cal.add(Calendar.DATE, -1)
+//        val starttime: Long = cal.timeInMillis
         val cal = Calendar.getInstance()
         cal.time = Date()
         cal[Calendar.HOUR_OF_DAY] = 0

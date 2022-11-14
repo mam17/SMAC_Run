@@ -11,7 +11,6 @@ import com.example.smac_runapp.TAG
 import com.example.smac_runapp.customviews.MyCustomChart
 import com.example.smac_runapp.databinding.FragmentDayBinding
 import com.example.smac_runapp.logger.Log
-import com.example.smac_runapp.presenter.HomePresenter
 import com.example.smac_runapp.utils.Utils.getAccount
 import com.example.smac_runapp.utils.Utils.getTimeNow
 import com.github.mikephil.charting.data.BarEntry
@@ -30,7 +29,6 @@ class DayFragment : Fragment() {
 
     lateinit var mView: View
     private lateinit var mBinding: FragmentDayBinding
-    private lateinit var viewModel: HomePresenter
 
     private lateinit var barEntriesList: ArrayList<BarEntry>
     private val lsAxis: ArrayList<String> = ArrayList()
@@ -52,56 +50,26 @@ class DayFragment : Fragment() {
         return mView
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val setUpChart =
+            activity?.let {
+                MyCustomChart(
+                    it.applicationContext,
+                    mBinding.barChartDay,
+                    barEntriesList,
+                    lsAxis,
+                4000f
+                )
+            }
+        setUpChart?.setUp()
+
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         getBarChartData()
         setAxis()
-        readData()
-    }
-
-    //Đọc tổng số bước hàng ngày hiện tại.
-    private fun readData() {
-        val cal = Calendar.getInstance()
-        cal.time = Date()
-        cal[Calendar.HOUR_OF_DAY] = 0
-        cal[Calendar.MINUTE] = 0
-        cal[Calendar.SECOND] = 0
-        val endtime = cal.timeInMillis
-
-        cal.add(Calendar.DAY_OF_WEEK, -7)
-        cal[Calendar.HOUR_OF_DAY] = 0
-        cal[Calendar.MINUTE] = 0
-        cal[Calendar.SECOND] = 0
-        val starttime = cal.timeInMillis
-
-        val readRequest = DataReadRequest.Builder()
-            .aggregate(DataType.TYPE_STEP_COUNT_DELTA, DataType.AGGREGATE_STEP_COUNT_DELTA)
-            .bucketByTime(1, TimeUnit.DAYS)
-            .setTimeRange(starttime, endtime, TimeUnit.MILLISECONDS)
-            .build()
-
-        Fitness.getHistoryClient(this.requireActivity().applicationContext, GoogleSignIn.getAccountForExtension(this.requireActivity().applicationContext, fitnessOptions))
-            .readData(readRequest)
-            .addOnSuccessListener { response ->
-                for (bucket in response.buckets){
-                    //convert days in bucket to milliseconds
-                    val days = bucket.getStartTime(TimeUnit.MILLISECONDS)
-                    //convert milliseconds to date
-                    val stepsDate = Date(days)
-                    // add day vao ls
-                    lsAxis.add(stepsDate.toString().substring(0, 4))
-                    android.util.Log.e(TAG, "accessGoogleFit: $stepsDate")
-                    xFloat++
-                    for (dataSet in bucket.dataSets) {
-                        barEntriesList.add(BarEntry(xFloat, dumpDataSet(dataSet)))
-                        android.util.Log.e(TAG, "accessGoogleFit: ${dumpDataSet(dataSet)}")
-                    }
-                }
-                getStepsByCurrentDay(lsAxis, barEntriesList)
-            }
-            .addOnFailureListener { e ->
-                Log.w(TAG, "There was an error reading data from Google Fit", e)
-            }
 
     }
 
@@ -115,7 +83,7 @@ class DayFragment : Fragment() {
         return totalSteps
     }
 
-    private fun getStepsByCurrentDay(lsAxis: java.util.ArrayList<String>, barEntriesList: ArrayList<BarEntry>) {
+    private fun getStepsByCurrentDay(lsAxis: ArrayList<String>, barEntriesList: ArrayList<BarEntry>) {
 
 
         android.util.Log.i(TAG, "getStepsByWeek: ${getTimeNow()}")
@@ -138,7 +106,7 @@ class DayFragment : Fragment() {
             }
     }
 
-    private fun displayChart(lsAxis: java.util.ArrayList<String>, barEntriesList: ArrayList<BarEntry>) {
+    private fun displayChart(lsAxis: ArrayList<String>, barEntriesList: ArrayList<BarEntry>) {
         MyCustomChart(context, mBinding.barChartDay, barEntriesList, lsAxis, 4000f)
             .setUp()
     }

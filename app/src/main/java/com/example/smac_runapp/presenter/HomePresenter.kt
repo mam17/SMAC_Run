@@ -169,7 +169,6 @@ class HomePresenter(
         return totalSteps
     }
 
-
     override fun onCleared() {
         super.onCleared()
         // Dispose All your Subscriptions to avoid memory leaks
