@@ -37,7 +37,6 @@ enum class FitActionRequestCode {
     SUBSCRIBE,
     READ_DATA
 }
-//tôi là long ahuhdcosahidsaas
 class MainActivity2 : AppCompatActivity() {
     private val fitnessOptions = FitnessOptions.builder()
         .addDataType(DataType.TYPE_STEP_COUNT_CUMULATIVE)

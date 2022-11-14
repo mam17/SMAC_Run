@@ -4,38 +4,31 @@ import android.content.Context
 import android.graphics.Color
 import androidx.core.content.ContextCompat
 import com.example.smac_runapp.R
+import com.example.smac_runapp.utils.Utils.getMaxValue
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.github.mikephil.charting.formatter.LargeValueFormatter
 import com.github.mikephil.charting.model.GradientColor
 
 class MyCustomChart(
-    context: Context,
-    barChart: BarChart,
-    barEntriesList: ArrayList<BarEntry>,
-    lsAxis: ArrayList<String>
+    private val context: Context?,
+    private val barChart: BarChart,
+    private val barEntriesList: ArrayList<BarEntry>,
+    private val lsAxis: ArrayList<String>,
+    private val maxYValue: Float
 ) {
-    private var context: Context
-    private var barChart: BarChart
     private lateinit var dataChart: BarData
     private lateinit var dataSet: BarDataSet
-    private var barEntriesList: ArrayList<BarEntry> = ArrayList()
-    private var lsAxis: ArrayList<String> = ArrayList()
 
-    init {
-        this.context = context
-        this.barChart = barChart
-        this.barEntriesList = barEntriesList
-        this.lsAxis = lsAxis
-    }
 
     fun setUp() {
 
         // set marker
-        val mv = MyMarkerView(context, R.layout.my_marker)
+        val mv = MyMarkerView(context!!, R.layout.my_marker)
         // gradient column
         val startColor = ContextCompat.getColor(context, R.color.gradient1)
         val endColor = ContextCompat.getColor(context, R.color.gradient3)
@@ -86,6 +79,22 @@ class MyCustomChart(
             isEnabled = false
             setDrawGridLines(true)
         }
+
+        var maxValue = maxYValue
+        if (getMaxValue(barEntriesList) >= 4000f) {
+            maxValue = getMaxValue(barEntriesList)
+        }
+
+        barChart.axisLeft.apply {
+            setDrawGridLines(false)
+            setDrawAxisLine(false)
+            setStartAtZero(true)
+            setAxisMaxValue(maxValue)
+            valueFormatter = LargeValueFormatter()
+            textColor = Color.WHITE
+            textSize = 12f
+        }
+
         // setup cot x
         barChart.xAxis.apply {
             position = XAxis.XAxisPosition.BOTTOM

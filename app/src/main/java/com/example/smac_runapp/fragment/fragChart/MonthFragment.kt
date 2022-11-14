@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import com.example.smac_runapp.R
 import com.example.smac_runapp.customviews.MyCustomChart
-import com.example.smac_runapp.databinding.FragmentDayBinding
 import com.example.smac_runapp.databinding.FragmentMonthBinding
 import com.github.mikephil.charting.data.BarEntry
 
@@ -40,7 +39,8 @@ class MonthFragment : Fragment() {
                     it.applicationContext,
                     mBinding.barChartMonth,
                     barEntriesList,
-                    lsAxis
+                    lsAxis,
+                    4000f
                 )
             }
         setUpChart?.setUp()
@@ -56,18 +56,18 @@ class MonthFragment : Fragment() {
 
     private fun getBarChartData() {
         barEntriesList = ArrayList()
-        barEntriesList.add(BarEntry(1f, 100f))
-        barEntriesList.add(BarEntry(2f, 350f))
-        barEntriesList.add(BarEntry(3f, 210f))
-        barEntriesList.add(BarEntry(4f, 110f))
-        barEntriesList.add(BarEntry(5f, 320f))
-        barEntriesList.add(BarEntry(6f, 330f))
-        barEntriesList.add(BarEntry(7f, 330f))
-        barEntriesList.add(BarEntry(8f, 330f))
-        barEntriesList.add(BarEntry(9f, 330f))
-        barEntriesList.add(BarEntry(10f, 330f))
-        barEntriesList.add(BarEntry(11f, 233f))
-        barEntriesList.add(BarEntry(12f, 110f))
+        barEntriesList.add(BarEntry(1f, 1000f))
+        barEntriesList.add(BarEntry(2f, 3500f))
+        barEntriesList.add(BarEntry(3f, 2100f))
+        barEntriesList.add(BarEntry(4f, 1100f))
+        barEntriesList.add(BarEntry(5f, 3200f))
+        barEntriesList.add(BarEntry(6f, 3300f))
+        barEntriesList.add(BarEntry(7f, 3300f))
+        barEntriesList.add(BarEntry(8f, 3300f))
+        barEntriesList.add(BarEntry(9f, 3030f))
+        barEntriesList.add(BarEntry(10f, 3300f))
+        barEntriesList.add(BarEntry(11f, 2303f))
+        barEntriesList.add(BarEntry(12f, 1010f))
     }
 
     private fun setAxis() {

@@ -11,13 +11,17 @@ import com.example.smac_runapp.TAG
 import com.example.smac_runapp.customviews.MyCustomChart
 import com.example.smac_runapp.databinding.FragmentDayBinding
 import com.example.smac_runapp.logger.Log
+import com.example.smac_runapp.presenter.HomePresenter
+import com.example.smac_runapp.utils.Utils.getAccount
+import com.example.smac_runapp.utils.Utils.getTimeNow
 import com.github.mikephil.charting.data.BarEntry
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.fitness.Fitness
 import com.google.android.gms.fitness.FitnessOptions
+import com.google.android.gms.fitness.data.DataSet
 import com.google.android.gms.fitness.data.DataType
+import com.google.android.gms.fitness.data.Field
 import com.google.android.gms.fitness.request.DataReadRequest
-import kotlinx.android.synthetic.main.fragment_home.*
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
@@ -26,10 +30,12 @@ class DayFragment : Fragment() {
 
     lateinit var mView: View
     private lateinit var mBinding: FragmentDayBinding
+    private lateinit var viewModel: HomePresenter
 
     private lateinit var barEntriesList: ArrayList<BarEntry>
     private val lsAxis: ArrayList<String> = ArrayList()
 
+    private var xFloat = 0f
     private val fitnessOptions = FitnessOptions.builder()
         .addDataType(DataType.TYPE_STEP_COUNT_CUMULATIVE)
         .addDataType(DataType.TYPE_STEP_COUNT_DELTA)
@@ -46,36 +52,15 @@ class DayFragment : Fragment() {
         return mView
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        val setUpChart =
-            activity?.let {
-                MyCustomChart(
-                    it.applicationContext,
-                    mBinding.barChartDay,
-                    barEntriesList,
-                    lsAxis
-                )
-            }
-        setUpChart?.setUp()
-
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         getBarChartData()
         setAxis()
-
+        readData()
     }
 
     //Đọc tổng số bước hàng ngày hiện tại.
     private fun readData() {
-//        val cal: Calendar = Calendar.getInstance()
-//        val now = Date()
-//        cal.time = now
-//        val endtime: Long = cal.timeInMillis
-//        cal.add(Calendar.DAY_OF_WEEK, -7)
-//        val starttime: Long = cal.timeInMillis
         val cal = Calendar.getInstance()
         cal.time = Date()
         cal[Calendar.HOUR_OF_DAY] = 0
@@ -83,7 +68,7 @@ class DayFragment : Fragment() {
         cal[Calendar.SECOND] = 0
         val endtime = cal.timeInMillis
 
-        cal.add(Calendar.DATE, -1)
+        cal.add(Calendar.DAY_OF_WEEK, -7)
         cal[Calendar.HOUR_OF_DAY] = 0
         cal[Calendar.MINUTE] = 0
         cal[Calendar.SECOND] = 0
@@ -98,19 +83,64 @@ class DayFragment : Fragment() {
         Fitness.getHistoryClient(this.requireActivity().applicationContext, GoogleSignIn.getAccountForExtension(this.requireActivity().applicationContext, fitnessOptions))
             .readData(readRequest)
             .addOnSuccessListener { response ->
-                for (dataSet in response.buckets.flatMap { it.dataSets }) {
-                    for (dp in dataSet.dataPoints) {
-                        for (field in dp.dataType.fields) {
-                            val value = dp.getValue(field).asInt().toString()
-                            numSteps.text = value
-                        }
+                for (bucket in response.buckets){
+                    //convert days in bucket to milliseconds
+                    val days = bucket.getStartTime(TimeUnit.MILLISECONDS)
+                    //convert milliseconds to date
+                    val stepsDate = Date(days)
+                    // add day vao ls
+                    lsAxis.add(stepsDate.toString().substring(0, 4))
+                    android.util.Log.e(TAG, "accessGoogleFit: $stepsDate")
+                    xFloat++
+                    for (dataSet in bucket.dataSets) {
+                        barEntriesList.add(BarEntry(xFloat, dumpDataSet(dataSet)))
+                        android.util.Log.e(TAG, "accessGoogleFit: ${dumpDataSet(dataSet)}")
                     }
                 }
+                getStepsByCurrentDay(lsAxis, barEntriesList)
             }
             .addOnFailureListener { e ->
                 Log.w(TAG, "There was an error reading data from Google Fit", e)
             }
 
+    }
+
+    private fun dumpDataSet(dataSet: DataSet): Float {
+        var totalSteps = 0f
+        for (dp in dataSet.dataPoints) {
+            for (field in dp.dataType.fields) {
+                totalSteps += dp.getValue(field).asInt()
+            }
+        }
+        return totalSteps
+    }
+
+    private fun getStepsByCurrentDay(lsAxis: java.util.ArrayList<String>, barEntriesList: ArrayList<BarEntry>) {
+
+
+        android.util.Log.i(TAG, "getStepsByWeek: ${getTimeNow()}")
+
+        Fitness.getHistoryClient(requireActivity(), getAccount(requireContext()))
+            .readDailyTotal(DataType.TYPE_STEP_COUNT_DELTA)
+            .addOnSuccessListener { dataSet ->
+//                val days = getStartTime(TimeUnit.MILLISECONDS)
+                val total = when {
+                    dataSet.isEmpty -> 0
+                    else -> dataSet.dataPoints.first().getValue(Field.FIELD_STEPS).asInt()
+                }
+                xFloat++
+                lsAxis.add(getTimeNow().toString().substring(0, 4))
+                barEntriesList.add(BarEntry(xFloat, total.toFloat()))
+                displayChart(lsAxis, barEntriesList)
+            }
+            .addOnFailureListener { e ->
+                android.util.Log.e(TAG, "There was a problem getting the step count.", e)
+            }
+    }
+
+    private fun displayChart(lsAxis: java.util.ArrayList<String>, barEntriesList: ArrayList<BarEntry>) {
+        MyCustomChart(context, mBinding.barChartDay, barEntriesList, lsAxis, 4000f)
+            .setUp()
     }
 
     private fun getBarChartData() {
