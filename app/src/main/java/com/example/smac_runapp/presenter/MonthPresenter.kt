@@ -40,7 +40,6 @@ class MonthPresenter(
 
     init {
         lsAxis.add("")
-
     }
 
     @SuppressLint("SimpleDateFormat")

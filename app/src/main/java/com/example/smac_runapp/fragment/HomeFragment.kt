@@ -12,12 +12,14 @@ import com.example.smac_runapp.R
 import com.example.smac_runapp.TAG
 import com.example.smac_runapp.adapter.ReceiveAdapter
 import com.example.smac_runapp.adapter.TabLayoutAdapter
+import com.example.smac_runapp.customviews.MySeekBar
 import com.example.smac_runapp.customviews.SpacesItemDecoration
 import com.example.smac_runapp.databinding.FragmentHomeBinding
 import com.example.smac_runapp.fragment.fragAwards.AwardFragment
 import com.example.smac_runapp.interfaces.HomeInterface
 import com.example.smac_runapp.logger.Log
 import com.example.smac_runapp.models.Receive
+import com.example.smac_runapp.models.customView.ReceiveSeekBar
 import com.example.smac_runapp.presenter.HomePresenter
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.fitness.Fitness
@@ -34,6 +36,7 @@ class HomeFragment(private val goToHome: HomeInterface) : Fragment() {
 
     private lateinit var mBinding: FragmentHomeBinding
     private var myAdapter = ReceiveAdapter(arrayListOf(),0)
+    private var lsIconReceive = ArrayList<ReceiveSeekBar>()
     private var lsReceive: ArrayList<Receive> = ArrayList()
     private val fitnessOptions = FitnessOptions.builder()
         .addDataType(DataType.TYPE_STEP_COUNT_CUMULATIVE)
@@ -53,8 +56,14 @@ class HomeFragment(private val goToHome: HomeInterface) : Fragment() {
         homePresenter = ViewModelProvider(this)[HomePresenter::class.java]
         mBinding.presenter = homePresenter
         homePresenter.checkPermission(requireActivity())
-
+        observerComponent()
         return mBinding.root
+    }
+
+    private fun observerComponent() {
+        homePresenter.process.observe(viewLifecycleOwner) {
+            mBinding.seekbar.progress = it / 4500f
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -65,10 +74,56 @@ class HomeFragment(private val goToHome: HomeInterface) : Fragment() {
         setReceive()
         setUpRcv()
         readData()
-        mBinding.viewAll.setOnClickListener {
-            goToHome.replaceReceive(AwardFragment())
-        }
+        replaceBack()
+        seekBarOnClick()
+        setupMySeekBar()
+    }
 
+    private fun seekBarOnClick() {
+        mBinding.seekbar.setOnClickListener(object : MySeekBar.OnClickBitmapReceive {
+            override fun clickItem(index: Int) {
+                /**
+                 * 1, neu isDisable = false => CLICK
+                 * 2, update trạng thái của lsIconReceive[index] isisDisable = true
+                 * 3, truyền ls mơi update vào MySeekBar => update lại view
+                 */
+                if (!lsIconReceive[index].isDisable) {
+                    lsIconReceive[index].isDisable = !lsIconReceive[index].isDisable
+                    Log.e("CLICKED  ", "clickItem: $index")
+
+                    // Xử lí logic click button ....
+
+                    updateSeekBar(lsIconReceive)
+                }
+            }
+        })
+
+    }
+
+    /**
+     * Update lại seekbar
+     */
+    private fun updateSeekBar(lsIconReceive: ArrayList<ReceiveSeekBar>) {
+        mBinding.seekbar.indicatorBitmapReceive = lsIconReceive
+        mBinding.seekbar.invalidate()
+    }
+
+    /**
+     * Add vị trí của indicator
+     * Add text
+     */
+    private fun setupMySeekBar() {
+        addIconReceive()
+        mBinding.seekbar.indicatorPositions = listOf(0F, 0.20F, 0.40F, 0.85F)
+        mBinding.seekbar.indicatorText = listOf("0", "500", "1000", "4000")
+        mBinding.seekbar.indicatorBitmapReceive = lsIconReceive
+    }
+
+    private fun addIconReceive() {
+        lsIconReceive.add(ReceiveSeekBar(0, true))
+        lsIconReceive.add(ReceiveSeekBar(R.drawable.receive1, false))
+        lsIconReceive.add(ReceiveSeekBar(R.drawable.receive2, false))
+        lsIconReceive.add(ReceiveSeekBar(R.drawable.receive3, false))
     }
 
     private fun setupSeekbar() {
@@ -159,4 +214,9 @@ class HomeFragment(private val goToHome: HomeInterface) : Fragment() {
             }
     }
 
+    private fun replaceBack() {
+        mBinding.viewAll.setOnClickListener {
+            goToHome.replaceReceive(AwardFragment())
+        }
+    }
 }

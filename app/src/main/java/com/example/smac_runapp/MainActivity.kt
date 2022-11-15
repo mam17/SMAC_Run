@@ -40,6 +40,7 @@ class MainActivity : AppCompatActivity(), HomeInterface {
     private lateinit var mBinding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        supportActionBar?.hide()
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
         reFragment(HomeFragment(this))
