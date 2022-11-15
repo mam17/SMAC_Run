@@ -24,7 +24,7 @@ class MyMarkerView(
 
     override fun refreshContent(e: Entry?, highlight: Highlight?) {
         try {
-            tvContent?.text = "${e?.y}"
+            tvContent?.text = "${e?.y?.toInt()}"
         } catch (e: IndexOutOfBoundsException) {
             Log.e("MyMarkerView", "refreshContent: ${e.message}")
         }
