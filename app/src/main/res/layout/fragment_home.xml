@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-<!--        <variable-->
-<!--            name="presenter"-->
-<!--            type="com.example.smac_runapp.presenter.HomePresenter" />-->
+        <variable
+            name="presenter"
+            type="com.example.smac_runapp.presenter.HomePresenter" />
     </data>
 
     <androidx.core.widget.NestedScrollView

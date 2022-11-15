@@ -60,7 +60,7 @@ class MyCustomChart(
             description.isEnabled = false
             marker = mv
             isDoubleTapToZoomEnabled = false
-            renderer = myBarChartRender
+//            renderer = myBarChartRender
             setBackgroundResource(R.drawable.bg_chartbar)
             setTouchEnabled(true)
             setScaleEnabled(true)

@@ -18,6 +18,7 @@ import com.example.smac_runapp.fragment.fragAwards.AwardFragment
 import com.example.smac_runapp.interfaces.HomeInterface
 import com.example.smac_runapp.logger.Log
 import com.example.smac_runapp.models.Receive
+import com.example.smac_runapp.presenter.HomePresenter
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.fitness.Fitness
 import com.google.android.gms.fitness.FitnessOptions
@@ -39,18 +40,26 @@ class HomeFragment(private val goToHome: HomeInterface) : Fragment() {
         .addDataType(DataType.TYPE_STEP_COUNT_DELTA)
         .build()
 
+    private var fragment: Fragment? = null
+    private lateinit var homePresenter: HomePresenter
+
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         mBinding = FragmentHomeBinding.inflate(inflater, container, false)
+
+        homePresenter = ViewModelProvider(this)[HomePresenter::class.java]
+        mBinding.presenter = homePresenter
+        homePresenter.checkPermission(requireActivity())
+
         return mBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mBinding.seekbar.indicatorPositions = listOf(0F, 0.2F, 0.4F, 0.85F)
-        mBinding.seekbar.indicatorText = listOf("0", "500", "1000", "4000")
+        setupSeekbar()
         setupViewPager()
         setTabLayout()
         setReceive()
@@ -60,6 +69,11 @@ class HomeFragment(private val goToHome: HomeInterface) : Fragment() {
             goToHome.replaceReceive(AwardFragment())
         }
 
+    }
+
+    private fun setupSeekbar() {
+        mBinding.seekbar.indicatorPositions = listOf(0F, 0.2F, 0.4F, 0.85F)
+        mBinding.seekbar.indicatorText = listOf("0", "500", "1000", "4000")
     }
 
     private fun setUpRcv() {
@@ -109,20 +123,14 @@ class HomeFragment(private val goToHome: HomeInterface) : Fragment() {
 
     //Đọc tổng số bước hàng ngày hiện tại.
     private fun readData() {
-//        val cal: Calendar = Calendar.getInstance()
-//        val now = Date()
-//        cal.time = Date()
-//        val endtime: Long = cal.timeInMillis
-//        cal.add(Calendar.DATE, -1)
-//        val starttime: Long = cal.timeInMillis
         val cal = Calendar.getInstance()
         cal.time = Date()
-        cal[Calendar.HOUR_OF_DAY] = 0
+        cal[Calendar.HOUR_OF_DAY] = 23
         cal[Calendar.MINUTE] = 0
         cal[Calendar.SECOND] = 0
         val endTime = cal.timeInMillis
 
-        cal.add(Calendar.DAY_OF_WEEK, -6)
+        cal.add(Calendar.DATE, -1)
         cal[Calendar.HOUR_OF_DAY] = 0
         cal[Calendar.MINUTE] = 0
         cal[Calendar.SECOND] = 0
