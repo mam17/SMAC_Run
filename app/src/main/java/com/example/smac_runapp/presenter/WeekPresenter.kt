@@ -2,6 +2,8 @@ package com.example.smac_runapp.presenter
 
 import android.annotation.SuppressLint
 import android.app.Application
+import android.icu.util.Calendar.WEEK_OF_YEAR
+import android.icu.util.Calendar.WeekData
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi

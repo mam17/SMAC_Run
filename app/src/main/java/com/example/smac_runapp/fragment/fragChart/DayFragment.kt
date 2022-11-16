@@ -8,12 +8,15 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import com.example.smac_runapp.R
 import com.example.smac_runapp.TAG
 import com.example.smac_runapp.customviews.MyCustomChart
 import com.example.smac_runapp.databinding.FragmentDayBinding
 import com.example.smac_runapp.logger.Log
+import com.example.smac_runapp.models.DataChart
+import com.example.smac_runapp.presenter.DayPresenter
 import com.example.smac_runapp.presenter.HomePresenter
 import com.example.smac_runapp.utils.Utils
 import com.example.smac_runapp.utils.Utils.dumpDataSet
@@ -33,8 +36,8 @@ class DayFragment : Fragment() {
 
     lateinit var mView: View
     private lateinit var mBinding: FragmentDayBinding
-
-    private lateinit var homePresenter: HomePresenter
+    val dataChar = MutableLiveData<DataChart>()
+    private lateinit var dayPresenter: DayPresenter
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,14 +47,14 @@ class DayFragment : Fragment() {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_day, container, false)
 
         mView = mBinding.root
-        homePresenter = ViewModelProvider(this)[HomePresenter::class.java]
-        homePresenter.checkPermission(requireActivity())
+        dayPresenter = ViewModelProvider(this)[DayPresenter::class.java]
+        dayPresenter.getStepsByWeek()
         observerChart()
         return mView
     }
 
     private fun observerChart() {
-        homePresenter.dataChart.observe(viewLifecycleOwner) {
+        dayPresenter.dataChar.observe(viewLifecycleOwner) {
             displayChart(it.lsAxis, it.lsBarEntry)
         }
     }

@@ -73,7 +73,7 @@ class HomeFragment(private val goToHome: HomeInterface) : Fragment() {
         setTabLayout()
         setReceive()
         setUpRcv()
-        readData()
+//        readData()
         replaceBack()
         seekBarOnClick()
         setupMySeekBar()
