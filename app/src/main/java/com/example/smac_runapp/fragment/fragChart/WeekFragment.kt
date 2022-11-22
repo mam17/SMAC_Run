@@ -46,15 +46,15 @@ class WeekFragment : Fragment() {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_week, container, false)
         weekPresenter = ViewModelProvider(this)[WeekPresenter::class.java]
         observerComponent()
-        weekPresenter.getStartEndOFWeek()
-        fake()
+        weekPresenter.getStepsByWeekOfMonth()
+//        fake()
         mView = mBinding.root
 
         return mView
     }
 
     private fun observerComponent() {
-        weekPresenter.dataChart.observe(viewLifecycleOwner) {
+        weekPresenter.dataChartByWeekOfMonth.observe(viewLifecycleOwner) {
             displayChart(it.lsAxis, it.lsBarEntry)
         }
     }
@@ -67,24 +67,4 @@ class WeekFragment : Fragment() {
             .setUp()
     }
 
-    fun fake(){
-        val calendar = Calendar.getInstance()
-        val enterWeek = calendar[Calendar.WEEK_OF_YEAR]
-        val enterYear = calendar[Calendar.YEAR]
-
-        calendar.clear()
-        calendar.set(Calendar.WEEK_OF_YEAR, enterWeek)
-        calendar.set(Calendar.YEAR, enterYear)
-
-        val formatter = SimpleDateFormat("dd/MMM/yyyy")
-        val startTime = calendar.time
-        val startDateInStr = formatter.format(startTime)
-        println("...date...$startDateInStr")
-
-        calendar.add(Calendar.DATE, 6)
-        val endTime = calendar.time
-        val endDaString = formatter.format(endTime)
-
-        println("...date...$endDaString")
-    }
 }

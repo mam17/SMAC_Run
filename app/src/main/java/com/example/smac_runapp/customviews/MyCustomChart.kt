@@ -87,7 +87,7 @@ class MyCustomChart(
 
         barChart.axisLeft.apply {
             setDrawGridLines(false)
-            setDrawAxisLine(false)
+            setDrawAxisLine(true)
             setStartAtZero(true)
             setAxisMaxValue(maxValue)
             valueFormatter = LargeValueFormatter()

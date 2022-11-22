@@ -4,5 +4,6 @@ data class Receive(
     val img: Int,
     val name: String,
     val date: String,
-    val check: Boolean
+    val progress: String,
+    val max: String
 )

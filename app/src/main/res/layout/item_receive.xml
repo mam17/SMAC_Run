@@ -22,6 +22,7 @@
             android:layout_height="@dimen/dimen_70"
             android:layout_gravity="center_horizontal"
             android:loadImage="@{item.img}"
+            android:showProgress="@{item}"
             android:scaleType="centerInside" />
 
         <com.example.smac_runapp.customviews.custom_textview.RobotoB
@@ -39,8 +40,9 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:text="@{item.date}"
+            android:showText="@{item}"
             android:textColor="@color/color_text_day"
-            android:textSize="14sp"
+            android:textSize="13sp"
             android:textStyle="bold" />
     </LinearLayout>
 </layout>

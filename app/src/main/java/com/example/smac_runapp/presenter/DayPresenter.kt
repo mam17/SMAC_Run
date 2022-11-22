@@ -5,7 +5,6 @@ import android.app.Application
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.databinding.ObservableArrayList
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.example.smac_runapp.models.DataChart
@@ -15,7 +14,6 @@ import com.google.android.gms.fitness.Fitness
 import com.google.android.gms.fitness.data.DataSet
 import com.google.android.gms.fitness.data.DataType
 import com.google.android.gms.fitness.data.Field
-import java.text.DateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
@@ -26,8 +24,6 @@ class DayPresenter(
     @SuppressLint("StaticFieldLeak")
     private val context = getApplication<Application>().applicationContext
     val dataChar = MutableLiveData<DataChart>()
-    private val lsAxis = ObservableArrayList<String>()
-    private val lsBarEntry = ObservableArrayList<BarEntry>()
     private var xFloat = 0
 
     private fun getStepsByCurrentDay(lsXAxis: ArrayList<String>, lsBarEntry: ArrayList<BarEntry>) {

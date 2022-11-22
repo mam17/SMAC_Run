@@ -79,16 +79,28 @@
                     android:id="@+id/seekbar"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dimen_200"
-                    android:layout_below="@+id/todaySteps"
                     android:layout_centerVertical="true"
-                    android:layout_marginHorizontal="@dimen/dimen_5"
-                    android:layout_marginTop="-50dp"
+                    android:layout_marginHorizontal="@dimen/dimen_8"
                     android:foregroundGravity="center"
                     app:barColor="@color/black"
                     app:barHeight="20"
-                    app:indicatorColor="@color/text_red"
-                    app:progress="0.3"
-                    app:progressColor="@color/text_red" />
+                    app:progressColor="@color/text_red"
+                    app:indicatorColor="@color/text_red"/>
+
+<!--                <com.example.smac_runapp.customviews.MySeekBar-->
+<!--                    android:id="@+id/seekbar"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="@dimen/dimen_200"-->
+<!--                    android:layout_below="@+id/todaySteps"-->
+<!--                    android:layout_centerVertical="true"-->
+<!--                    android:layout_marginHorizontal="@dimen/dimen_5"-->
+<!--                    android:layout_marginTop="-50dp"-->
+<!--                    android:foregroundGravity="center"-->
+<!--                    app:barColor="@color/black"-->
+<!--                    app:barHeight="20"-->
+<!--                    app:indicatorColor="@color/text_red"-->
+<!--                    app:progress="0.3"-->
+<!--                    app:progressColor="@color/text_red" />-->
 
             </RelativeLayout>
 

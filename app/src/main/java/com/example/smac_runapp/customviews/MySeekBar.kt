@@ -10,13 +10,12 @@ import android.view.View
 import com.example.smac_runapp.R
 import com.example.smac_runapp.models.customView.ButtonBitMapClick
 import com.example.smac_runapp.models.customView.ReceiveSeekBar
-import com.example.smac_runapp.utils.SeekBarCus
 import com.example.smac_runapp.utils.Utils
 
 class MySeekBar(context: Context, attrs: AttributeSet) : View(context, attrs) {
     private var barColor = Color.GRAY
     private var textThumbnailSize = 20f
-    private var barHeight = 25F
+    private var barHeight = 24F
     private var indicatorColor = Color.CYAN
     private var progressColor = Color.GREEN
     private var textThumbnail = Color.WHITE
@@ -27,18 +26,18 @@ class MySeekBar(context: Context, attrs: AttributeSet) : View(context, attrs) {
         listOf(0, R.drawable.check, R.drawable.check, R.drawable.starcheck)
     private val indicatorBitmapCheck =
         listOf(0, R.drawable.check_, R.drawable.check_, R.drawable.star_check_)
-
 //    private val radiusCir = 25f
 
     lateinit var indicatorPositions: List<Float>
     lateinit var indicatorText: List<String>
     lateinit var indicatorBitmapReceive: ArrayList<ReceiveSeekBar>
 
-    private var marginHorizontalProgress = width * 0.1f
+    private var marginHorizontalProgress = width * 0.2f
     private lateinit var bitmapConvert: Bitmap
     private var lsPositionBitmapTouch = ArrayList<ButtonBitMapClick>()
 
     private lateinit var listener: OnClickBitmapReceive
+
 
     var progress = 1F // From float from 0 to 1
         set(state) {
@@ -50,7 +49,7 @@ class MySeekBar(context: Context, attrs: AttributeSet) : View(context, attrs) {
         paint.isAntiAlias = true
         paint.style = Paint.Style.FILL
         paintBitmap.style = Paint.Style.FILL
-        paintBitmap.alpha = 70
+        paintBitmap.alpha = 60
         setupAttributes(attrs)
     }
 
@@ -249,6 +248,7 @@ class MySeekBar(context: Context, attrs: AttributeSet) : View(context, attrs) {
         }
         return false
     }
+
 
     interface OnClickBitmapReceive {
         fun clickItem(index: Int) {}

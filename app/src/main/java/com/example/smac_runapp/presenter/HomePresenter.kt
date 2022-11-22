@@ -34,7 +34,6 @@ class HomePresenter(
     private var xFloat = 0
     val totalSteps = ObservableField<Int>()
     val process = MutableLiveData<Float>()
-    val dataChart = MutableLiveData<DataChart>()
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun checkPermission(activity: Activity) {
@@ -76,7 +75,7 @@ class HomePresenter(
             }
     }
 
-    private fun getStepsByCurrentDay(lsXAxis: ArrayList<String>, lsBarEntry: ArrayList<BarEntry>) {
+    private fun getStepsByCurrentDay() {
         Fitness.getHistoryClient(context.applicationContext, getAccount(context))
             .readDailyTotal(DataType.TYPE_STEP_COUNT_DELTA)
             .addOnSuccessListener { dataSet ->
@@ -87,11 +86,6 @@ class HomePresenter(
                 xFloat++
                 totalSteps.set(total)
                 process.value = total.toFloat()
-                lsXAxis.add(getTimeNow().toString().substring(0, 4))
-                lsBarEntry.add(BarEntry(xFloat.toFloat(), total.toFloat()))
-                Log.e(TAG, "getStepsByCurrentDay: ${totalSteps.get()}")
-                val barEntry = DataChart(lsXAxis, lsBarEntry)
-                dataChart.value = barEntry
             }
             .addOnFailureListener { e ->
                 Log.w(TAG, "There was a problem getting the step count.", e)
@@ -100,11 +94,7 @@ class HomePresenter(
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun getStepsToDay() {
-        val lsXAxis = ArrayList<String>()
-        val lsBarEntry = ArrayList<BarEntry>()
-
-        lsXAxis.add("")
-//        //lấy step 1 tuần trc
+     //lấy step 1 tuần trc
         val cal = Calendar.getInstance()
         cal.time = Date()
         cal[Calendar.HOUR_OF_DAY] = 0
@@ -121,7 +111,7 @@ class HomePresenter(
         Fitness.getHistoryClient(context, getAccount(context))
             .readData(Utils.getReadRequestData(startTime, endTime))
             .addOnSuccessListener {
-                getStepsByCurrentDay(lsXAxis, lsBarEntry)
+                getStepsByCurrentDay()
 
             }
             .addOnFailureListener { e ->

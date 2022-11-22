@@ -6,6 +6,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.smac_runapp.databinding.ItemReceiveBinding
 import com.example.smac_runapp.models.Receive
+import com.google.android.flexbox.AlignItems
+import com.google.android.flexbox.FlexboxLayoutManager
 
 class ReceiveAdapter(
     private val lsReceive: ArrayList<Receive>,
@@ -39,11 +41,12 @@ class ReceiveAdapter(
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        //var opacity = 100
         val currentMovie = lsReceive[position]
         holder.mBinding.item = currentMovie
-        if (!currentMovie.check){
-            holder.mBinding.image.setAlpha(20)
+        val lp = holder.mBinding.itemReceive.layoutParams
+        if (lp is FlexboxLayoutManager.LayoutParams) {
+            lp.flexGrow = 1.0f
+            lp.alignSelf = AlignItems.FLEX_START
         }
     }
 

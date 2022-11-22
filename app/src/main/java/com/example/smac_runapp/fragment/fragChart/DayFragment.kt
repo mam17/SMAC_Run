@@ -36,7 +36,6 @@ class DayFragment : Fragment() {
 
     lateinit var mView: View
     private lateinit var mBinding: FragmentDayBinding
-    val dataChar = MutableLiveData<DataChart>()
     private lateinit var dayPresenter: DayPresenter
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(

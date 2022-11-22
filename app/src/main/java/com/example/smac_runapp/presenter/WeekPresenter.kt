@@ -28,39 +28,39 @@ class WeekPresenter(
     @SuppressLint("StaticFieldLeak")
     private val context = getApplication<Application>().applicationContext
 
-    val dataChart = MutableLiveData<DataChart>()
+    val dataChartByWeekOfMonth = MutableLiveData<DataChart>()
     private val lsAxis = ObservableArrayList<String>()
-    private val lsBarEntry = ObservableArrayList<BarEntry>()
     private val cal = Calendar.getInstance()
-    private val currentYear = cal[Calendar.YEAR]
+    private val currentMonth = cal[Calendar.MONTH] + 1
+
     init {
         lsAxis.add("")
     }
 
-    @SuppressLint("SimpleDateFormat")
-     fun getStartEndOFWeek() {
-        
-        val currentMonth = cal[Calendar.MONTH]
-        cal[Calendar.DATE] = 1
-        cal[Calendar.HOUR_OF_DAY] = 0
-        cal[Calendar.MINUTE] = 0
-        cal[Calendar.SECOND] = 0
-        val startTime = cal.timeInMillis
-        // end time
-        val day = Utils.getNumOfMonth(cal[Calendar.YEAR], currentMonth)
+    fun getStepsByWeekOfMonth() {
+        // lấy thời gian
+        val cal = Calendar.getInstance()
 
+        val day = Utils.getNumOfMonth(cal[Calendar.YEAR], currentMonth)
         cal[Calendar.DATE] = day
         cal[Calendar.HOUR_OF_DAY] = 0
         cal[Calendar.MINUTE] = 0
         cal[Calendar.SECOND] = 0
         val endTime = cal.timeInMillis
-        
+        // start time
+        cal[Calendar.DATE] = 1
+        cal[Calendar.HOUR_OF_DAY] = 0
+        cal[Calendar.MINUTE] = 0
+        cal[Calendar.SECOND] = 0
+        val startTime = cal.timeInMillis
+
+
         GlobalScope.launch(Dispatchers.Main) {
             try {
                 val lsRawData = async { Utils.getData(context, startTime, endTime) }
                 handlerRawDataByWeekOfMonth(lsRawData.await())
             } catch (e: Exception) {
-                android.util.Log.e(TAG, "getStepsByWeek: err :${e}")
+                Log.e(TAG, "getStepsByWeek: err :${e}")
             }
         }
     }
@@ -68,53 +68,31 @@ class WeekPresenter(
     private fun handlerRawDataByWeekOfMonth(lsRawData: ArrayList<RawData>) {
         val lsAxis = ArrayList<String>()
         val lsBarEntry = ArrayList<BarEntry>()
-        lsAxis.add("")
 
         var day = 6
         var start = 0
+        // lặp 1 tháng, tính tổng 1 tuần
         for (i in 0..4) {
             var totalWeek = 0f
             if (day >= lsRawData.size) {
                 day = lsRawData.size - 1
             }
+            // tỉnh tổng steps từng tuần
             for (j in start..day) {
                 totalWeek += lsRawData[j].step
             }
             val time = Utils.convertTimeRequestToShort(lsRawData[start].time, lsRawData[day].time)
-            android.util.Log.e(TAG, "handlerRawDataByWeekOfMonth: time $time")
             lsAxis.add(time)
-//            lsAxis.add((i + 1).toString())
-            lsBarEntry.add(BarEntry(i + 2f, totalWeek))
-            dataChart.postValue(DataChart(lsAxis, lsBarEntry))
+            lsBarEntry.add(BarEntry((i).toFloat(), totalWeek))
 
             start = day + 1
             day += 7
-
         }
+
+        lsBarEntry.forEachIndexed { index, barEntry ->
+            Log.e(TAG, "handlerRawDataByWeekOfMonth: ${barEntry.y} --- ${lsAxis[index]}")
+        }
+        dataChartByWeekOfMonth.postValue(DataChart(lsAxis, lsBarEntry))
     }
 
-
-    private fun getTotalStepWeek(startTime: Long, endTime: Long, i: Int) {
-        var weely = 0f
-        Fitness.getHistoryClient(context.applicationContext,getAccount(context))
-            .readData(getReadRequestData(startTime , endTime))
-            .addOnSuccessListener { response ->
-                // 1 tuần
-                //convert milliseconds to date
-                val stepsDate = Date(response.buckets[0].getStartTime(TimeUnit.MILLISECONDS))
-                for (bucket in response.buckets) {
-                    var totalDay = 0f
-                    for (dataSet in bucket.dataSets) {
-                        totalDay +=
-                            Utils.dumpDataSet(dataSet)
-                    }
-                    weely += totalDay
-                }
-
-                lsAxis.add(stepsDate.toString().substring(4, 7))
-                lsBarEntry.add(BarEntry(i.toFloat(), weely))
-                dataChart.value = DataChart(lsAxis, lsBarEntry)
-            }
-            .addOnFailureListener { e -> Log.d(TAG, "OnFailure()", e) }
-    }
 }

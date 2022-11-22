@@ -35,15 +35,9 @@ import kotlin.collections.ArrayList
 class HomeFragment(private val goToHome: HomeInterface) : Fragment() {
 
     private lateinit var mBinding: FragmentHomeBinding
-    private var myAdapter = ReceiveAdapter(arrayListOf(),0)
+    private var myAdapter = ReceiveAdapter(arrayListOf(), 0)
     private var lsIconReceive = ArrayList<ReceiveSeekBar>()
     private var lsReceive: ArrayList<Receive> = ArrayList()
-    private val fitnessOptions = FitnessOptions.builder()
-        .addDataType(DataType.TYPE_STEP_COUNT_CUMULATIVE)
-        .addDataType(DataType.TYPE_STEP_COUNT_DELTA)
-        .build()
-
-    private var fragment: Fragment? = null
     private lateinit var homePresenter: HomePresenter
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -68,12 +62,10 @@ class HomeFragment(private val goToHome: HomeInterface) : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupSeekbar()
         setupViewPager()
         setTabLayout()
         setReceive()
         setUpRcv()
-//        readData()
         replaceBack()
         seekBarOnClick()
         setupMySeekBar()
@@ -89,7 +81,6 @@ class HomeFragment(private val goToHome: HomeInterface) : Fragment() {
                  */
                 if (!lsIconReceive[index].isDisable) {
                     lsIconReceive[index].isDisable = !lsIconReceive[index].isDisable
-                    Log.e("CLICKED  ", "clickItem: $index")
 
                     // Xử lí logic click button ....
 
@@ -126,31 +117,57 @@ class HomeFragment(private val goToHome: HomeInterface) : Fragment() {
         lsIconReceive.add(ReceiveSeekBar(R.drawable.receive3, false))
     }
 
-    private fun setupSeekbar() {
-        mBinding.seekbar.indicatorPositions = listOf(0F, 0.2F, 0.4F, 0.85F)
-        mBinding.seekbar.indicatorText = listOf("0", "500", "1000", "4000")
-    }
-
     private fun setUpRcv() {
+        myAdapter.addData(setReceive())
         mBinding.rcv.apply {
             adapter = myAdapter
-            addItemDecoration(SpacesItemDecoration(10))
             setHasFixedSize(true)
         }
     }
 
-    private fun setReceive() {
+    private fun setReceive(): ArrayList<Receive>  {
+        lsReceive.add(
+            Receive(
+                R.drawable.huy_chuong2, "Spectacular Breakout", "17/10/2022", "120", "120"
+            )
+        )
+        lsReceive.add(
+            Receive(
+                R.drawable.huy_huong1, "October Challenger", "17/10/2022", "120", "120"
+            )
+        )
+        lsReceive.add(
+            Receive(
+                R.drawable.huy_chuong3, "Step to Mars ", "17/10/2022", "120", "120"
+            )
+        )
+        lsReceive.add(
+            Receive(
+                R.drawable.huy_chuong4, "August Challenger", "17/10/2022", "120", "120"
+            )
+        )
+        lsReceive.add(
+            Receive(
+                R.drawable.huy_chuong2, "Spectacular Breakout", "17/10/2022", "120", "120"
+            )
+        )
+        lsReceive.add(
+            Receive(
+                R.drawable.huy_huong1, "October Challenger", "17/10/2022", "120", "120"
+            )
+        )
+        lsReceive.add(
+            Receive(
+                R.drawable.huy_chuong3, "Step to Mars ", "17/10/2022", "120", "120"
+            )
+        )
+        lsReceive.add(
+            Receive(
+                R.drawable.huy_chuong4, "August Challenger", "17/10/2022", "120", "120"
+            )
+        )
 
-        lsReceive.add(Receive(R.drawable.huy_chuong2, "Spectacular Breakout","17/10/2022", true))
-        lsReceive.add(Receive(R.drawable.huy_huong1, "October Challenger","17/10/2022", true))
-        lsReceive.add(Receive(R.drawable.huy_chuong3, "Step to Mars ","17/10/2022", true))
-        lsReceive.add(Receive(R.drawable.huy_chuong4, "August Challenger","17/10/2022", true))
-        lsReceive.add(Receive(R.drawable.huy_chuong2, "Spectacular Breakout","17/10/2022", true))
-        lsReceive.add(Receive(R.drawable.huy_huong1, "October Challenger","17/10/2022",true))
-        lsReceive.add(Receive(R.drawable.huy_chuong3, "Step to Mars ","17/10/2022",true))
-        lsReceive.add(Receive(R.drawable.huy_chuong4, "August Challenger","17/10/2022", true))
-
-        myAdapter.addData(lsReceive)
+        return lsReceive
     }
 
     private fun setTabLayout() {
@@ -174,44 +191,6 @@ class HomeFragment(private val goToHome: HomeInterface) : Fragment() {
     private fun setupViewPager() {
         val adapter = activity?.let { TabLayoutAdapter(it) }
         mBinding.viewpage.adapter = adapter
-    }
-
-    //Đọc tổng số bước hàng ngày hiện tại.
-    private fun readData() {
-        val cal = Calendar.getInstance()
-        cal.time = Date()
-        cal[Calendar.HOUR_OF_DAY] = 23
-        cal[Calendar.MINUTE] = 0
-        cal[Calendar.SECOND] = 0
-        val endTime = cal.timeInMillis
-
-        cal.add(Calendar.DATE, -1)
-        cal[Calendar.HOUR_OF_DAY] = 0
-        cal[Calendar.MINUTE] = 0
-        cal[Calendar.SECOND] = 0
-        val startTime = cal.timeInMillis
-
-        val readRequest = DataReadRequest.Builder()
-            .aggregate(DataType.TYPE_STEP_COUNT_DELTA, DataType.AGGREGATE_STEP_COUNT_DELTA)
-            .bucketByTime(1, TimeUnit.DAYS)
-            .setTimeRange(startTime, endTime, TimeUnit.MILLISECONDS)
-            .build()
-
-        Fitness.getHistoryClient(this.requireActivity().applicationContext, GoogleSignIn.getAccountForExtension(this.requireActivity().applicationContext, fitnessOptions))
-            .readData(readRequest)
-            .addOnSuccessListener { response ->
-                for (dataSet in response.buckets.flatMap { it.dataSets }) {
-                    for (dp in dataSet.dataPoints) {
-                        for (field in dp.dataType.fields) {
-                            val value = dp.getValue(field).asInt().toString()
-                            numSteps.text = value
-                        }
-                    }
-                }
-            }
-            .addOnFailureListener { e ->
-                Log.w(TAG, "There was an error reading data from Google Fit", e)
-            }
     }
 
     private fun replaceBack() {
