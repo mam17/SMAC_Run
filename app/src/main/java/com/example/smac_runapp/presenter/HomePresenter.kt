@@ -9,19 +9,16 @@ import androidx.annotation.RequiresApi
 import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import com.example.smac_runapp.models.DataChart
 import com.example.smac_runapp.utils.FitRequestCode
 import com.example.smac_runapp.utils.Utils
 import com.example.smac_runapp.utils.Utils.fitnessOptions
 import com.example.smac_runapp.utils.Utils.getAccount
-import com.example.smac_runapp.utils.Utils.getTimeNow
-import com.github.mikephil.charting.data.BarEntry
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.fitness.Fitness
 import com.google.android.gms.fitness.data.DataType
 import com.google.android.gms.fitness.data.Field
+import kotlinx.coroutines.*
 import java.util.*
-import kotlin.collections.ArrayList
 
 const val TAG = "HomePresenter"
 
@@ -32,8 +29,10 @@ class HomePresenter(
     @SuppressLint("StaticFieldLeak")
     private val context = getApplication<Application>().applicationContext
     private var xFloat = 0
+
     val totalSteps = ObservableField<Int>()
     val process = MutableLiveData<Float>()
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun checkPermission(activity: Activity) {
@@ -93,7 +92,7 @@ class HomePresenter(
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun getStepsToDay() {
+     fun getStepsToDay() {
      //lấy step 1 tuần trc
         val cal = Calendar.getInstance()
         cal.time = Date()
@@ -118,5 +117,7 @@ class HomePresenter(
                 Log.d(TAG, "OnFailure()", e)
             }
     }
+
+
 
 }

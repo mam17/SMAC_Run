@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Bitmap
+import android.widget.TextView
+import androidx.databinding.BindingAdapter
 import com.example.smac_runapp.models.RawData
 import com.github.mikephil.charting.data.BarEntry
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -16,7 +18,9 @@ import com.google.android.gms.fitness.request.DataReadRequest
 import kotlinx.coroutines.tasks.await
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
+import java.time.Month
 import java.time.YearMonth
+import java.time.format.TextStyle
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.math.floor
@@ -24,7 +28,14 @@ import kotlin.math.log10
 import kotlin.math.pow
 
 object Utils {
-
+    const val MAX_WEEK = 25000
+    const val MAX_DAY = 4000
+    const val MAX_MONTH = 120000
+    val lsAccumulateChallenger = arrayListOf(
+        "Good Start", "Persist Practicing", "Enduring Accumulation", "Spectacular",
+        "Never Back Down", "Children of Sylph", "Feet Are Not Tired", "Step to the Moon",
+        "Step to Marks"
+    )
     fun dumpDataSet(dataSet: DataSet): Float {
         var totalSteps = 0f
         for (dp in dataSet.dataPoints) {
@@ -153,6 +164,29 @@ object Utils {
         return lsRawData
     }
 
+    fun getNameOfMonth(month: Int): Month? {
+        Month                             // Enum class, predefining and naming a dozen objects, one for each month of the year.
+            .of(12)                         // Retrieving one of the enum objects by number, 1-12.
+            .getDisplayName(
+                TextStyle.FULL_STANDALONE,
+                Locale.ENGLISH          // Locale determines the human language and cultural norms used in localizing.
+            )
+//        return DateFormatSymbols().months[month - 1]
+        return Month.of(month)
+    }
+    
+    @SuppressLint("SetTextI18n")
+    @JvmStatic
+    @BindingAdapter("android:countTitlesMonthChallenger")
+    fun countTitlesMonthChallenger(tv: TextView, count: Int) {
+        tv.text = "$count/12 Titles"
+    }
 
+    @SuppressLint("SetTextI18n")
+    @JvmStatic
+    @BindingAdapter("android:countTitlesAccumulateChallenger")
+    fun countTitlesAccumulateChallenger(tv: TextView, count: Int) {
+        tv.text = "$count/9 Titles"
+    }
 
 }

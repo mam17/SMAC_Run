@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+        <variable
+            name="item"
+            type="com.example.smac_runapp.presenter.AwardPresenter" />
     </data>
 
     <androidx.core.widget.NestedScrollView
@@ -42,7 +44,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_margin="@dimen/dimen_4"
-                    android:text="@string/_3_12_titles"
+                    android:countTitlesMonthChallenger="@{item.countTitles}"
                     android:textColor="@color/text_red"
                     android:textSize="18sp"
                     android:textStyle="bold" />

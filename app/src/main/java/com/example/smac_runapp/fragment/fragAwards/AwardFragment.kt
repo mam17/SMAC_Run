@@ -10,11 +10,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.databinding.DataBindingUtil
+import androidx.databinding.ObservableField
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModelProvider
 import com.example.smac_runapp.R
 import com.example.smac_runapp.adapter.ReceiveAdapter
 import com.example.smac_runapp.databinding.AwardDialogBinding
 import com.example.smac_runapp.databinding.FragmentAwardBinding
+import com.example.smac_runapp.models.RawData
 import com.example.smac_runapp.models.Receive
+import com.example.smac_runapp.presenter.AwardPresenter
+import com.example.smac_runapp.presenter.DayPresenter
+import com.example.smac_runapp.presenter.HomePresenter
+import com.example.smac_runapp.utils.Utils
+import kotlinx.coroutines.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 class AwardFragment : Fragment() {
 
@@ -22,12 +33,8 @@ class AwardFragment : Fragment() {
     private val binding get() = mBinding!!
     private var myAdapterMonthChallenger = ReceiveAdapter(arrayListOf(), 1)
     private var myAdapterAccumulatingSteps = ReceiveAdapter(arrayListOf(), 1)
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        addLsMonthChallenger()
-    }
+    private val lsChallenger = ArrayList<Receive>()
+    private lateinit var awardPresenter: AwardPresenter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,13 +43,19 @@ class AwardFragment : Fragment() {
         mBinding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_award, container, false
         )
+        awardPresenter = ViewModelProvider(this)[AwardPresenter::class.java]
+        awardPresenter.getStepsByMonth()
+        setUpRcv()
+        showAlertDialog()
+        observer()
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setUpRcv()
-        showAlertDialog()
+    private fun observer() {
+        awardPresenter.lsMonthChallenger.observe(viewLifecycleOwner) {
+            lsChallenger.addAll(it)
+            myAdapterMonthChallenger.addData(it)
+        }
     }
 
     private fun setUpRcv() {
@@ -50,7 +63,6 @@ class AwardFragment : Fragment() {
             adapter = myAdapterMonthChallenger
             setHasFixedSize(true)
         }
-        myAdapterMonthChallenger.addData(addLsMonthChallenger())
         //
         binding.rcv2.apply {
             adapter = myAdapterAccumulatingSteps
@@ -89,132 +101,13 @@ class AwardFragment : Fragment() {
 
     }
 
-    private fun addLsMonthChallenger(): ArrayList<Receive> {
-        val lsReceive = ArrayList<Receive>()
-        lsReceive.add(
-            Receive(
-                R.drawable.huy_huong1,
-                "Thu thach thang 1",
-                "14/1/2022",
-                "120",
-                "120"
-            )
-        )
-        lsReceive.add(
-            Receive(
-                R.drawable.huy_huong1,
-                "Thu thach thang 2",
-                "14/1/2022",
-                "10",
-                "120"
-            )
-        )
-
-        lsReceive.add(
-            Receive(
-                R.drawable.huy_huong1,
-                "Thu thach thang 3",
-                "14/1/2022",
-                "120",
-                "120"
-            )
-        )
-        lsReceive.add(
-            Receive(
-                R.drawable.huy_huong1,
-                "Thu thach thang 4",
-                "14/1/2022",
-                "120",
-                "120"
-            )
-        )
-
-        lsReceive.add(
-            Receive(
-                R.drawable.huy_huong1,
-                "Thu thach thang 5",
-                "14/1/2022",
-                "120",
-                "120"
-            )
-        )
-        lsReceive.add(
-            Receive(
-                R.drawable.huy_huong1,
-                "Thu thach thang 6",
-                "14/1/2022",
-                "120",
-                "120"
-            )
-        )
-
-        lsReceive.add(
-            Receive(
-                R.drawable.huy_huong1,
-                "Thu thach thang 7",
-                "14/1/2022",
-                "120",
-                "120"
-            )
-        )
-        lsReceive.add(
-            Receive(
-                R.drawable.huy_huong1,
-                "Thu thach thang 8",
-                "14/1/2022",
-                "120",
-                "120"
-            )
-        )
-
-        lsReceive.add(
-            Receive(
-                R.drawable.huy_huong1,
-                "Thu thach thang 9",
-                "14/1/2022",
-                "120",
-                "120"
-            )
-        )
-        lsReceive.add(
-            Receive(
-                R.drawable.huy_huong1,
-                "Thu thach thang 10",
-                "14/1/2022",
-                "120",
-                "120"
-            )
-        )
-
-        lsReceive.add(
-            Receive(
-                R.drawable.huy_huong1,
-                "Thu thach thang 11",
-                "14/1/2022",
-                "120",
-                "120"
-            )
-        )
-        lsReceive.add(
-            Receive(
-                R.drawable.huy_huong1,
-                "Thu thach thang 12",
-                "14/1/2022",
-                "120",
-                "120"
-            )
-        )
-
-        return lsReceive
-    }
-
     private fun addLsAccumulatingSteps(): ArrayList<Receive> {
         val lsAccumulatingSteps = ArrayList<Receive>()
         lsAccumulatingSteps.add(
             Receive(
                 R.drawable.huy_huong1,
-                "Khoi dau suon se",
-                "14/1/2022",
+                Utils.lsAccumulateChallenger[0],
+                0,
                 "20",
                 "120"
             )
@@ -222,8 +115,8 @@ class AwardFragment : Fragment() {
         lsAccumulatingSteps.add(
             Receive(
                 R.drawable.huy_huong1,
-                "Kien tri luyen tap",
-                "14/1/2022",
+                Utils.lsAccumulateChallenger[1],
+                0,
                 "10",
                 "120"
             )
@@ -232,8 +125,8 @@ class AwardFragment : Fragment() {
         lsAccumulatingSteps.add(
             Receive(
                 R.drawable.huy_huong1,
-                "Tich luy ben bi",
-                "14/1/2022",
+                Utils.lsAccumulateChallenger[2],
+                1669827600776,
                 "120",
                 "120"
             )
@@ -241,8 +134,8 @@ class AwardFragment : Fragment() {
         lsAccumulatingSteps.add(
             Receive(
                 R.drawable.huy_huong1,
-                "But pha ngoan muc",
-                "14/1/2022",
+                Utils.lsAccumulateChallenger[3],
+                0,
                 "20",
                 "120"
             )
@@ -251,8 +144,8 @@ class AwardFragment : Fragment() {
         lsAccumulatingSteps.add(
             Receive(
                 R.drawable.huy_huong1,
-                "Khong he lui buoc",
-                "14/1/2022",
+                Utils.lsAccumulateChallenger[4],
+                1669827600776,
                 "120",
                 "120"
             )
@@ -260,8 +153,8 @@ class AwardFragment : Fragment() {
         lsAccumulatingSteps.add(
             Receive(
                 R.drawable.huy_huong1,
-                "Dua con than gio",
-                "14/1/2022",
+                Utils.lsAccumulateChallenger[5],
+                1669827600776,
                 "120",
                 "120"
             )
@@ -270,8 +163,8 @@ class AwardFragment : Fragment() {
         lsAccumulatingSteps.add(
             Receive(
                 R.drawable.huy_huong1,
-                "Doi chan khong moi",
-                "14/1/2022",
+                Utils.lsAccumulateChallenger[6],
+                0,
                 "20",
                 "120"
             )
@@ -279,8 +172,8 @@ class AwardFragment : Fragment() {
         lsAccumulatingSteps.add(
             Receive(
                 R.drawable.huy_huong1,
-                "Buoc toi mat trang",
-                "14/1/2022",
+                Utils.lsAccumulateChallenger[7],
+                1669827600776,
                 "120",
                 "120"
             )
@@ -289,8 +182,8 @@ class AwardFragment : Fragment() {
         lsAccumulatingSteps.add(
             Receive(
                 R.drawable.huy_huong1,
-                "Buoc toi sao hoa",
-                "14/1/2022",
+                Utils.lsAccumulateChallenger[8],
+                0,
                 "10",
                 "120"
             )

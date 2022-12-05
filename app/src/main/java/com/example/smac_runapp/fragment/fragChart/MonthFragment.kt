@@ -13,7 +13,6 @@ import com.example.smac_runapp.R
 import com.example.smac_runapp.TAG
 import com.example.smac_runapp.customviews.MyCustomChart
 import com.example.smac_runapp.databinding.FragmentMonthBinding
-import com.example.smac_runapp.logger.Log
 import com.example.smac_runapp.presenter.HomePresenter
 import com.example.smac_runapp.presenter.MonthPresenter
 import com.example.smac_runapp.utils.Utils.fitnessOptions

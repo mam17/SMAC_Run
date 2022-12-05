@@ -14,14 +14,9 @@ import com.example.smac_runapp.R
 import com.example.smac_runapp.TAG
 import com.example.smac_runapp.customviews.MyCustomChart
 import com.example.smac_runapp.databinding.FragmentWeekBinding
-import com.example.smac_runapp.logger.Log
 import com.example.smac_runapp.presenter.WeekPresenter
 import com.example.smac_runapp.utils.Utils
 import com.github.mikephil.charting.data.BarEntry
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.fitness.Fitness
-import com.google.android.gms.fitness.data.DataType
-import com.google.android.gms.fitness.request.DataReadRequest
 import kotlinx.android.synthetic.main.fragment_home.*
 import java.text.SimpleDateFormat
 import java.util.*

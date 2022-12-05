@@ -34,7 +34,7 @@ object BindingItem {
         if (progressAfter / maxAfter < 1) {
             tv.text = "${item.progress}k/${item.max}k"
         } else {
-            tv.text = item.date
+            tv.text = item.date.toString()
         }
     }
 }

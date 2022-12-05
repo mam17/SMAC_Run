@@ -14,7 +14,7 @@ import com.example.smac_runapp.utils.Utils
 
 class MySeekBar(context: Context, attrs: AttributeSet) : View(context, attrs) {
     private var barColor = Color.GRAY
-    private var textThumbnailSize = 20f
+    private var textThumbnailSize = 40f
     private var barHeight = 24F
     private var indicatorColor = Color.CYAN
     private var progressColor = Color.GREEN

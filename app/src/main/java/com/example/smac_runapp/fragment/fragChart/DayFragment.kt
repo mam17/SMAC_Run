@@ -14,7 +14,6 @@ import com.example.smac_runapp.R
 import com.example.smac_runapp.TAG
 import com.example.smac_runapp.customviews.MyCustomChart
 import com.example.smac_runapp.databinding.FragmentDayBinding
-import com.example.smac_runapp.logger.Log
 import com.example.smac_runapp.models.DataChart
 import com.example.smac_runapp.presenter.DayPresenter
 import com.example.smac_runapp.presenter.HomePresenter

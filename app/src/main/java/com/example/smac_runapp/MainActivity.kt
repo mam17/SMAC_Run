@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
@@ -15,7 +16,6 @@ import com.example.smac_runapp.fragment.EventFragment
 import com.example.smac_runapp.fragment.HomeFragment
 import com.example.smac_runapp.fragment.fragAwards.AwardFragment
 import com.example.smac_runapp.interfaces.HomeInterface
-import com.example.smac_runapp.logger.Log
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.fitness.Fitness
 import com.google.android.gms.fitness.FitnessOptions
@@ -136,7 +136,6 @@ class MainActivity : AppCompatActivity(), HomeInterface {
             Request code was: $requestCode
             Result code was: $resultCode
         """.trimIndent()
-        Log.e(TAG, message)
     }
 
     private fun oAuthPermissionsApproved() =

@@ -3,10 +3,10 @@ package com.example.smac_runapp.presenter
 import android.annotation.SuppressLint
 import android.app.Application
 import android.icu.util.Calendar.*
+import android.util.Log
 import androidx.databinding.ObservableArrayList
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import com.example.smac_runapp.logger.Log
 import com.example.smac_runapp.models.DataChart
 import com.example.smac_runapp.models.RawData
 import com.example.smac_runapp.utils.Utils

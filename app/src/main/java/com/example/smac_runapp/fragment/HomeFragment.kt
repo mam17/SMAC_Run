@@ -9,27 +9,18 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.smac_runapp.R
-import com.example.smac_runapp.TAG
 import com.example.smac_runapp.adapter.ReceiveAdapter
 import com.example.smac_runapp.adapter.TabLayoutAdapter
 import com.example.smac_runapp.customviews.MySeekBar
-import com.example.smac_runapp.customviews.SpacesItemDecoration
 import com.example.smac_runapp.databinding.FragmentHomeBinding
 import com.example.smac_runapp.fragment.fragAwards.AwardFragment
 import com.example.smac_runapp.interfaces.HomeInterface
-import com.example.smac_runapp.logger.Log
 import com.example.smac_runapp.models.Receive
 import com.example.smac_runapp.models.customView.ReceiveSeekBar
 import com.example.smac_runapp.presenter.HomePresenter
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.fitness.Fitness
-import com.google.android.gms.fitness.FitnessOptions
-import com.google.android.gms.fitness.data.DataType
-import com.google.android.gms.fitness.request.DataReadRequest
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.android.synthetic.main.fragment_home.*
 import java.util.*
-import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
 class HomeFragment(private val goToHome: HomeInterface) : Fragment() {
@@ -128,42 +119,42 @@ class HomeFragment(private val goToHome: HomeInterface) : Fragment() {
     private fun setReceive(): ArrayList<Receive>  {
         lsReceive.add(
             Receive(
-                R.drawable.huy_chuong2, "Spectacular Breakout", "17/10/2022", "120", "120"
+                R.drawable.huy_chuong2, "Spectacular Breakout", 0, "120", "120"
             )
         )
         lsReceive.add(
             Receive(
-                R.drawable.huy_huong1, "October Challenger", "17/10/2022", "120", "120"
+                R.drawable.huy_huong1, "October Challenger", 0, "120", "120"
             )
         )
         lsReceive.add(
             Receive(
-                R.drawable.huy_chuong3, "Step to Mars ", "17/10/2022", "120", "120"
+                R.drawable.huy_chuong3, "Step to Mars ", 0, "120", "120"
             )
         )
         lsReceive.add(
             Receive(
-                R.drawable.huy_chuong4, "August Challenger", "17/10/2022", "120", "120"
+                R.drawable.huy_chuong4, "August Challenger", 0, "120", "120"
             )
         )
         lsReceive.add(
             Receive(
-                R.drawable.huy_chuong2, "Spectacular Breakout", "17/10/2022", "120", "120"
+                R.drawable.huy_chuong2, "Spectacular Breakout", 0, "120", "120"
             )
         )
         lsReceive.add(
             Receive(
-                R.drawable.huy_huong1, "October Challenger", "17/10/2022", "120", "120"
+                R.drawable.huy_huong1, "October Challenger", 0, "120", "120"
             )
         )
         lsReceive.add(
             Receive(
-                R.drawable.huy_chuong3, "Step to Mars ", "17/10/2022", "120", "120"
+                R.drawable.huy_chuong3, "Step to Mars ", 0, "120", "120"
             )
         )
         lsReceive.add(
             Receive(
-                R.drawable.huy_chuong4, "August Challenger", "17/10/2022", "120", "120"
+                R.drawable.huy_chuong4, "August Challenger", 0, "120", "120"
             )
         )
 
