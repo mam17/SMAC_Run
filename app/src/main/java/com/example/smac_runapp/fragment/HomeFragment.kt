@@ -19,7 +19,6 @@ import com.example.smac_runapp.models.Receive
 import com.example.smac_runapp.models.customView.ReceiveSeekBar
 import com.example.smac_runapp.presenter.HomePresenter
 import com.google.android.material.tabs.TabLayoutMediator
-import kotlinx.android.synthetic.main.fragment_home.*
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -28,7 +27,6 @@ class HomeFragment(private val goToHome: HomeInterface) : Fragment() {
     private lateinit var mBinding: FragmentHomeBinding
     private var myAdapter = ReceiveAdapter(arrayListOf(), 0)
     private var lsIconReceive = ArrayList<ReceiveSeekBar>()
-    private var lsReceive: ArrayList<Receive> = ArrayList()
     private lateinit var homePresenter: HomePresenter
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -42,24 +40,25 @@ class HomeFragment(private val goToHome: HomeInterface) : Fragment() {
         mBinding.presenter = homePresenter
         homePresenter.checkPermission(requireActivity())
         observerComponent()
+        setUpRcv()
+        setupViewPager()
+        setTabLayout()
+        replaceBack()
+        seekBarOnClick()
+        setupMySeekBar()
         return mBinding.root
     }
+
+
 
     private fun observerComponent() {
         homePresenter.process.observe(viewLifecycleOwner) {
             mBinding.seekbar.progress = it / 4500f
+            mBinding.numSteps.text = it.toString()
         }
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setupViewPager()
-        setTabLayout()
-        setReceive()
-        setUpRcv()
-        replaceBack()
-        seekBarOnClick()
-        setupMySeekBar()
+        homePresenter.challengerCollected.observe(viewLifecycleOwner) {
+            myAdapter.addData(it)
+        }
     }
 
     private fun seekBarOnClick() {
@@ -96,7 +95,7 @@ class HomeFragment(private val goToHome: HomeInterface) : Fragment() {
      */
     private fun setupMySeekBar() {
         addIconReceive()
-        mBinding.seekbar.indicatorPositions = listOf(0F, 0.20F, 0.40F, 0.85F)
+        mBinding.seekbar.indicatorPositions = listOf(0F, 0.20F, 0.40F, 0.80F)
         mBinding.seekbar.indicatorText = listOf("0", "500", "1000", "4000")
         mBinding.seekbar.indicatorBitmapReceive = lsIconReceive
     }
@@ -106,59 +105,6 @@ class HomeFragment(private val goToHome: HomeInterface) : Fragment() {
         lsIconReceive.add(ReceiveSeekBar(R.drawable.receive1, false))
         lsIconReceive.add(ReceiveSeekBar(R.drawable.receive2, false))
         lsIconReceive.add(ReceiveSeekBar(R.drawable.receive3, false))
-    }
-
-    private fun setUpRcv() {
-        myAdapter.addData(setReceive())
-        mBinding.rcv.apply {
-            adapter = myAdapter
-            setHasFixedSize(true)
-        }
-    }
-
-    private fun setReceive(): ArrayList<Receive>  {
-        lsReceive.add(
-            Receive(
-                R.drawable.huy_chuong2, "Spectacular Breakout", 0, "120", "120"
-            )
-        )
-        lsReceive.add(
-            Receive(
-                R.drawable.huy_huong1, "October Challenger", 0, "120", "120"
-            )
-        )
-        lsReceive.add(
-            Receive(
-                R.drawable.huy_chuong3, "Step to Mars ", 0, "120", "120"
-            )
-        )
-        lsReceive.add(
-            Receive(
-                R.drawable.huy_chuong4, "August Challenger", 0, "120", "120"
-            )
-        )
-        lsReceive.add(
-            Receive(
-                R.drawable.huy_chuong2, "Spectacular Breakout", 0, "120", "120"
-            )
-        )
-        lsReceive.add(
-            Receive(
-                R.drawable.huy_huong1, "October Challenger", 0, "120", "120"
-            )
-        )
-        lsReceive.add(
-            Receive(
-                R.drawable.huy_chuong3, "Step to Mars ", 0, "120", "120"
-            )
-        )
-        lsReceive.add(
-            Receive(
-                R.drawable.huy_chuong4, "August Challenger", 0, "120", "120"
-            )
-        )
-
-        return lsReceive
     }
 
     private fun setTabLayout() {
@@ -177,6 +123,13 @@ class HomeFragment(private val goToHome: HomeInterface) : Fragment() {
                 }
             }
         }.attach()
+    }
+
+    private fun setUpRcv() {
+        mBinding.rcv.apply {
+            adapter = myAdapter
+            setHasFixedSize(true)
+        }
     }
 
     private fun setupViewPager() {

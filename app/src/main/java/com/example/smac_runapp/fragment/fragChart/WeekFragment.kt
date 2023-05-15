@@ -1,6 +1,5 @@
 package com.example.smac_runapp.fragment.fragChart
 
-import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,26 +10,16 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.smac_runapp.R
-import com.example.smac_runapp.TAG
 import com.example.smac_runapp.customviews.MyCustomChart
 import com.example.smac_runapp.databinding.FragmentWeekBinding
-import com.example.smac_runapp.presenter.WeekPresenter
-import com.example.smac_runapp.utils.Utils
+import com.example.smac_runapp.presenter.HomePresenter
 import com.github.mikephil.charting.data.BarEntry
-import kotlinx.android.synthetic.main.fragment_home.*
-import java.text.SimpleDateFormat
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 class WeekFragment : Fragment() {
-
-
     lateinit var mView: View
     private lateinit var mBinding: FragmentWeekBinding
-    lateinit var weekPresenter: WeekPresenter
-
-    private lateinit var barEntriesList: ArrayList<BarEntry>
-    private val lsAxis: ArrayList<String> = ArrayList()
+    lateinit var weekPresenter: HomePresenter
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -39,7 +28,7 @@ class WeekFragment : Fragment() {
     ): View {
         // Inflate the layout for this fragment
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_week, container, false)
-        weekPresenter = ViewModelProvider(this)[WeekPresenter::class.java]
+        weekPresenter = ViewModelProvider(this)[HomePresenter::class.java]
         observerComponent()
         weekPresenter.getStepsByWeekOfMonth()
 //        fake()
@@ -58,8 +47,9 @@ class WeekFragment : Fragment() {
         lsAxis: ArrayList<String>,
         lsBarEntries: ArrayList<BarEntry>
     ) {
-        MyCustomChart(context, mBinding.barChartWeek, lsBarEntries, lsAxis, 4000f)
-            .setUp()
+        lsAxis.add("")
+        lsBarEntries.add(BarEntry(5f, null))
+        MyCustomChart(context, mBinding.barChartWeek, lsBarEntries, lsAxis, 4000f).setUp()
     }
 
 }

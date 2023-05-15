@@ -5,6 +5,7 @@ import android.graphics.Color
 import androidx.core.content.ContextCompat
 import com.example.smac_runapp.R
 import com.example.smac_runapp.utils.Utils.getMaxValue
+import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
@@ -60,10 +61,13 @@ class MyCustomChart(
             description.isEnabled = false
             marker = mv
             isDoubleTapToZoomEnabled = false
+            animateY(3000, Easing.EaseOutBack)
+            extraBottomOffset = 10f
+            extraLeftOffset = 2f
 //            renderer = myBarChartRender
-            setBackgroundResource(R.drawable.bg_chartbar)
+            setNoDataText("Loading...")
             setTouchEnabled(true)
-            setScaleEnabled(true)
+            setScaleEnabled(false)
             setVisibleXRangeMaximum(7F)
         }
         // setup cot x ben trai
@@ -77,21 +81,20 @@ class MyCustomChart(
         // setup cot y ben phai
         barChart.axisRight.apply {
             isEnabled = false
-            setDrawGridLines(true)
+            setDrawGridLines(false)
         }
 
         var maxValue = maxYValue
-        if (getMaxValue(barEntriesList) >= 4000f) {
+        if (getMaxValue(barEntriesList) >= maxYValue) {
             maxValue = getMaxValue(barEntriesList)
         }
-
         barChart.axisLeft.apply {
             setDrawGridLines(false)
             setDrawAxisLine(true)
             setStartAtZero(true)
             setAxisMaxValue(maxValue)
             valueFormatter = LargeValueFormatter()
-            textColor = Color.WHITE
+            textColor = Color.BLACK
             textSize = 12f
         }
 
@@ -105,5 +108,8 @@ class MyCustomChart(
             setDrawGridLines(false)
 
         }
+
+        // tu hien thi cot cuoi cung
+        barChart.moveViewToX(dataChart.entryCount.toFloat())
     }
 }

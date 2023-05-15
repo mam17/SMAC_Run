@@ -1,10 +1,14 @@
 package com.example.smac_runapp.utils
 
 import android.annotation.SuppressLint
+import android.content.ContentValues
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Bitmap
+import android.os.Build
+import android.util.Log
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.databinding.BindingAdapter
 import com.example.smac_runapp.models.RawData
 import com.github.mikephil.charting.data.BarEntry
@@ -14,6 +18,7 @@ import com.google.android.gms.fitness.FitnessOptions
 import com.google.android.gms.fitness.data.DataSet
 import com.google.android.gms.fitness.data.DataSource
 import com.google.android.gms.fitness.data.DataType
+import com.google.android.gms.fitness.data.Field
 import com.google.android.gms.fitness.request.DataReadRequest
 import kotlinx.coroutines.tasks.await
 import java.text.DecimalFormat
@@ -31,11 +36,15 @@ object Utils {
     const val MAX_WEEK = 25000
     const val MAX_DAY = 4000
     const val MAX_MONTH = 120000
+    //
+    val ACCUMULATE_CHALLENGER =
+        arrayListOf(10000F,30000F,100000F,200000F,500000F,1000000F,2000000F,5000000F,10000000F)
     val lsAccumulateChallenger = arrayListOf(
         "Good Start", "Persist Practicing", "Enduring Accumulation", "Spectacular",
         "Never Back Down", "Children of Sylph", "Feet Are Not Tired", "Step to the Moon",
         "Step to Marks"
     )
+
     fun dumpDataSet(dataSet: DataSet): Float {
         var totalSteps = 0f
         for (dp in dataSet.dataPoints) {
@@ -54,7 +63,7 @@ object Utils {
             .build()
     }
 
-    val ESTIMATED_STEP_DELTAS: DataSource = DataSource.Builder()
+    private val ESTIMATED_STEP_DELTAS: DataSource = DataSource.Builder()
         .setDataType(DataType.TYPE_STEP_COUNT_DELTA)
         .setType(DataSource.TYPE_DERIVED)
         .setStreamName("estimated_steps")
@@ -67,6 +76,43 @@ object Utils {
             .setTimeRange(startTime, endTime, TimeUnit.MILLISECONDS)
             .bucketByTime(1, TimeUnit.DAYS)
             .build()
+    }
+
+    //
+    suspend fun getDailySteps(context: Context): Int {
+        val task = Fitness.getHistoryClient(context.applicationContext, getAccount(context))
+            .readDailyTotal(DataType.TYPE_STEP_COUNT_DELTA)
+        val response = task.await()
+        val total = when {
+            response.isEmpty -> 0
+            else -> response.dataPoints.first().getValue(Field.FIELD_STEPS).asInt()
+        }
+        Log.e(ContentValues.TAG, "readData: $total")
+        return total
+    }
+
+
+    @SuppressLint("SimpleDateFormat")
+    suspend fun getData(
+        context: Context,
+        startTime: Long,
+        endTime: Long
+    ): ArrayList<RawData> {
+        val lsRawData = ArrayList<RawData>()
+        val task = Fitness.getHistoryClient(context.applicationContext, getAccount(context))
+            .readData(getReadRequestData(startTime, endTime))
+        val response = task.await()
+        for (bucket in response.buckets) {
+            val stepsDate = bucket.getStartTime(TimeUnit.MILLISECONDS)
+            var totalDay = 0f
+            for (dataSet in bucket.dataSets) {
+                // step trong 1 ngay
+                totalDay +=
+                    dumpDataSet(dataSet)
+            }
+            lsRawData.add(RawData(stepsDate, totalDay))
+        }
+        return lsRawData
     }
 
 
@@ -108,7 +154,7 @@ object Utils {
         }
     }
 
-    fun getMaxValue(lsBarEntries: java.util.ArrayList<BarEntry>): Float {
+    fun getMaxValue(lsBarEntries: ArrayList<BarEntry>): Float {
         var maxValue = 0f
         lsBarEntries.forEachIndexed { _, barEntry ->
             if (barEntry.y > maxValue) {
@@ -118,52 +164,15 @@ object Utils {
         return maxValue
     }
 
-    fun getTimeNow(): Date {
-        val cal = Calendar.getInstance()
-        cal.time = Date()
-        cal[Calendar.HOUR_OF_DAY] = 0
-        cal[Calendar.MINUTE] = 0
-        cal[Calendar.SECOND] = 0
-        return Date(cal.timeInMillis)
-    }
-
+    @RequiresApi(Build.VERSION_CODES.O)
     fun getNumOfMonth(year: Int, month: Int): Int {
+
         // lấy số ngày theo tháng
         val yearMonthObject = YearMonth.of(year, month)
         return yearMonthObject.lengthOfMonth()
     }
 
-    @SuppressLint("SimpleDateFormat")
-    fun convertTimeRequestToShort(startTime: Long, endTime: Long): String {
-        val sdf = SimpleDateFormat("dd/MM/yyyy")
-        val start = sdf.format(startTime).toString().substring(0, 5)
-        val end = sdf.format(endTime).toString().substring(0, 5)
-        return end
-    }
-
-    @SuppressLint("SimpleDateFormat")
-    suspend fun getData(
-        context: Context,
-        startTime: Long,
-        endTime: Long
-    ): ArrayList<RawData> {
-        val lsRawData = ArrayList<RawData>()
-        val task = Fitness.getHistoryClient(context.applicationContext, getAccount(context))
-            .readData(getReadRequestData(startTime, endTime))
-        val response = task.await()
-        for (bucket in response.buckets) {
-            val stepsDate = bucket.getStartTime(TimeUnit.MILLISECONDS)
-            var totalDay = 0f
-            for (dataSet in bucket.dataSets) {
-                // step trong 1 ngay
-                totalDay +=
-                    dumpDataSet(dataSet)
-            }
-            lsRawData.add(RawData(stepsDate, totalDay))
-        }
-        return lsRawData
-    }
-
+    @RequiresApi(Build.VERSION_CODES.O)
     fun getNameOfMonth(month: Int): Month? {
         Month                             // Enum class, predefining and naming a dozen objects, one for each month of the year.
             .of(12)                         // Retrieving one of the enum objects by number, 1-12.
@@ -171,22 +180,22 @@ object Utils {
                 TextStyle.FULL_STANDALONE,
                 Locale.ENGLISH          // Locale determines the human language and cultural norms used in localizing.
             )
-//        return DateFormatSymbols().months[month - 1]
         return Month.of(month)
     }
-    
-    @SuppressLint("SetTextI18n")
-    @JvmStatic
-    @BindingAdapter("android:countTitlesMonthChallenger")
-    fun countTitlesMonthChallenger(tv: TextView, count: Int) {
-        tv.text = "$count/12 Titles"
+
+    @SuppressLint("SimpleDateFormat")
+    fun convertTimeRequestToShort(startTime: Long, endTime: Long): String {
+        val sdf = SimpleDateFormat("dd/MM/yyyy")
+        return sdf.format(endTime).toString().substring(0, 5)
     }
 
-    @SuppressLint("SetTextI18n")
-    @JvmStatic
-    @BindingAdapter("android:countTitlesAccumulateChallenger")
-    fun countTitlesAccumulateChallenger(tv: TextView, count: Int) {
-        tv.text = "$count/9 Titles"
+    fun getTimeNow(): Date {
+        val cal = Calendar.getInstance()
+        cal.time = Date()
+        cal[Calendar.HOUR_OF_DAY] = 0
+        cal[Calendar.MINUTE] = 0
+        cal[Calendar.SECOND] = 0
+        return Date(cal.timeInMillis)
     }
 
 }

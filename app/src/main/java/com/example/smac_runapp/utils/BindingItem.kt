@@ -37,4 +37,19 @@ object BindingItem {
             tv.text = item.date.toString()
         }
     }
+
+    @SuppressLint("SetTextI18n")
+    @JvmStatic
+    @BindingAdapter("android:countTitlesMonthChallenger")
+    fun countTitlesMonthChallenger(tv: TextView, count: Int) {
+        tv.text = "$count/12 Titles"
+    }
+
+    @SuppressLint("SetTextI18n")
+    @JvmStatic
+    @BindingAdapter("android:countTitlesAccumulateChallenger")
+    fun countTitlesAccumulateChallenger(tv: TextView, count: Int) {
+        tv.text = "$count/9 Titles"
+    }
+
 }

@@ -4,9 +4,12 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import androidx.activity.result.ActivityResultLauncher
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
@@ -16,6 +19,8 @@ import com.example.smac_runapp.fragment.EventFragment
 import com.example.smac_runapp.fragment.HomeFragment
 import com.example.smac_runapp.fragment.fragAwards.AwardFragment
 import com.example.smac_runapp.interfaces.HomeInterface
+import com.example.smac_runapp.presenter.HomePresenter
+import com.example.smac_runapp.utils.FitRequestCode
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.fitness.Fitness
 import com.google.android.gms.fitness.FitnessOptions
@@ -29,6 +34,8 @@ enum class FitActionRequestCode {
     READ_DATA
 }
 class MainActivity : AppCompatActivity(), HomeInterface {
+
+    private lateinit var viewModel: HomePresenter
     private val fitnessOptions = FitnessOptions.builder()
         .addDataType(DataType.TYPE_STEP_COUNT_CUMULATIVE)
         .addDataType(DataType.TYPE_STEP_COUNT_DELTA)
@@ -105,17 +112,13 @@ class MainActivity : AppCompatActivity(), HomeInterface {
     }
 
     // Xử lý lệnh gọi lại từ luồng đăng nhập OAuth, thực hiện chức năng đăng nhập.
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        when (resultCode) {
-            RESULT_OK -> {
-                val postSignInAction = FitActionRequestCode.values()[requestCode]
-                postSignInAction.let {
-                    performActionForRequestCode(postSignInAction)
-                }
-            }
-            else -> oAuthErrorMsg(requestCode, resultCode)
+        if (requestCode == FitRequestCode.GG_FIT_REQUEST_CODE.ordinal) {
+            viewModel.checkPermission(this)
+            viewModel.subscribe()
         }
     }
 
@@ -245,4 +248,6 @@ class MainActivity : AppCompatActivity(), HomeInterface {
             }
         }
     }
+
+
 }
